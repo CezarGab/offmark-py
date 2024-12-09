@@ -37,6 +37,7 @@ class FileDecoder(FrameReader):
         info = probe(self.file)
         self.width = info['width']
         self.height = info['height']
+        self.fps = info['fps']
 
         # RGB24
         self.frame_size_bytes = self.width * self.height * 3

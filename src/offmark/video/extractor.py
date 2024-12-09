@@ -13,6 +13,7 @@ class Extractor:
         self.frame_reader = frame_reader
         self.frame_extractor = frame_extractor
         self.degenerator = degenerator
+        self.list_frames_reads = []
 
     @trace(logger)
     def start(self):
@@ -31,4 +32,8 @@ class Extractor:
         wm_frame_yuv = cv2.cvtColor(frame_rgb.astype(np.float32), cv2.COLOR_BGR2YUV)
         frame_yuv = self.frame_extractor.decode(wm_frame_yuv)
         out = self.degenerator.degenerate(frame_yuv)
+        self.list_frames_reads.append(out)
         logger.info(out)
+        
+    def get_frames_reads(self):
+        return self.list_frames_reads

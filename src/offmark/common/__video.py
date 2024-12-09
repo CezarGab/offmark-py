@@ -9,15 +9,15 @@ logger = logging.getLogger(__name__)
 
 
 @trace(logger)
-def probe(video_file):
-    info = ffmpeg.probe(video_file)
-    logger.debug(pprint.pformat(info))
-
-    video_info = next(s for s in info['streams'] if s['codec_type'] == 'video')
-    d = {
-        'width': int(video_info['width']),
-        'height': int(video_info['height'])
-    }
-    logger.info(f'Probed video: {d}')
-
-    return d
+def probe(file):
+    """Extract video metadata using ffmpeg.probe."""
+    info = ffmpeg.probe(file)
+    video_streams = [stream for stream in info['streams'] if stream['codec_type'] == 'video']
+    if not video_streams:
+        raise ValueError("No video stream found in file.")
+    video_stream = video_streams[0]
+    fps = eval(video_stream['avg_frame_rate'])  # avg_frame_rate is typically a fraction
+    return {
+        'width': int(video_stream['width']),
+        'height': int(video_stream['height']),
+        'fps': fps}
